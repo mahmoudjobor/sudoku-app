@@ -5,19 +5,32 @@ import { generateSudoku, validateBoard } from "./utils/sudokuGenrator";
 import "./styles/App.css";
 
 function App() {
+  const initialPuzzle = generateSudoku("medium");
   const [difficulty, setDifficulty] = useState<"easy" | "medium" | "hard">(
     "medium"
   );
-  const [board, setBoard] = useState<(number | null)[][]>(
-    generateSudoku("medium")
-  );
+  const [board, setBoard] = useState<(number | null)[][]>(() => {
+    const puzzle = generateSudoku("medium");
+    return puzzle;
+  });
   const [conflicts, setConflicts] = useState<Set<string>>(new Set());
   const [checkMsg, setCheckMsg] = useState<string>("");
+  const [initialCells, setInitialCells] = useState<boolean[][]>(() => {
+    return board.map((row) => row.map((cell) => cell !== null));
+  });
 
   // Generate a new puzzle
   const handleNewGame = () => {
     const newPuzzle = generateSudoku(difficulty);
     setBoard(newPuzzle);
+    setConflicts(new Set());
+    setCheckMsg("");
+
+    const newInitialCells = newPuzzle.map((row) =>
+      row.map((cell) => cell !== null)
+    );
+    setInitialCells(newInitialCells);
+
     setConflicts(new Set());
     setCheckMsg("");
   };
@@ -62,7 +75,12 @@ function App() {
         </button>
       </div>
       <div className="sudoku-container">
-        <Board board={board} setBoard={handleSetBoard} conflicts={conflicts} />
+        <Board
+          board={board}
+          setBoard={handleSetBoard}
+          conflicts={conflicts}
+          initialCells={initialCells}
+        />
       </div>
       <button className="check-btn" onClick={handleCheckSolution}>
         Check Solution

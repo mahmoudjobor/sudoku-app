@@ -5,10 +5,17 @@ interface BoardProps {
   board: (number | null)[][];
   setBoard: React.Dispatch<React.SetStateAction<(number | null)[][]>>;
   conflicts: Set<string>;
+  initialCells: boolean[][];
 }
 
-const Board: React.FC<BoardProps> = ({ board, setBoard, conflicts }) => {
+const Board: React.FC<BoardProps> = ({
+  board,
+  setBoard,
+  conflicts,
+  initialCells,
+}) => {
   const handleCellChange = (row: number, col: number, value: number | null) => {
+    if (initialCells[row][col]) return;
     const newBoard = board.map((r) => [...r]);
     newBoard[row][col] = value;
     setBoard(newBoard);
@@ -34,11 +41,13 @@ const Board: React.FC<BoardProps> = ({ board, setBoard, conflicts }) => {
               key={`${rowIndex}-${colIndex}`}
             >
               <Cell
+                key={`${rowIndex}-${colIndex}`}
                 value={cellValue}
                 onChange={(value) =>
                   handleCellChange(rowIndex, colIndex, value)
                 }
-                isConflict={isConflict}
+                isConflict={conflicts.has(`${rowIndex}-${colIndex}`)}
+                readOnly={initialCells[rowIndex][colIndex]}
               />
             </div>
           );

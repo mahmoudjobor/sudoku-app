@@ -4,12 +4,22 @@ interface CellProps {
   value: number | null;
   onChange: (value: number | null) => void;
   isConflict?: boolean;
+  readOnly?: boolean;
 }
 
-const Cell: React.FC<CellProps> = ({ value, onChange, isConflict }) => {
+const Cell: React.FC<CellProps> = ({
+  value,
+  onChange,
+  isConflict,
+  readOnly,
+}) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (readOnly) return;
+
     const newValue = event.target.value ? parseInt(event.target.value) : null;
-    onChange(newValue);
+    if (!newValue || (newValue >= 1 && newValue <= 9)) {
+      onChange(newValue);
+    }
   };
 
   return (
@@ -20,6 +30,7 @@ const Cell: React.FC<CellProps> = ({ value, onChange, isConflict }) => {
       min={1}
       max={9}
       className={`cell${isConflict ? " conflict" : ""}`}
+      readOnly={readOnly}
     />
   );
 };

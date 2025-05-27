@@ -171,3 +171,8 @@ header p {
   border: 2px solid #e53e3e !important;
   color: #b91c1c;
 }
+.cell.readonly {
+  background-color: #f0f0f0;
+  color: #666;
+  cursor: not-allowed;
+}
