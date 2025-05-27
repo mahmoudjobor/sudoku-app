@@ -35,25 +35,6 @@ function copyBoard(board: (number | null)[][]): (number | null)[][] {
   return board.map((row) => [...row]);
 }
 
-// Backtracking solver: fills the board, returns true if solved
-function solveBoard(board: (number | null)[][]): boolean {
-  for (let row = 0; row < 9; row++) {
-    for (let col = 0; col < 9; col++) {
-      if (!board[row][col]) {
-        for (let num = 1; num <= 9; num++) {
-          if (isSafe(board, row, col, num)) {
-            board[row][col] = num;
-            if (solveBoard(board)) return true;
-            board[row][col] = null;
-          }
-        }
-        return false;
-      }
-    }
-  }
-  return true;
-}
-
 // Check if num can be placed at board[row][col]
 function isSafe(
   board: (number | null)[][],
@@ -192,13 +173,13 @@ function validateBoard(board: (number | null)[][]): Set<string> {
     }
 
     // Mark row conflicts
-    for (const [num, cols] of rowMap.entries()) {
+    for (const [, cols] of rowMap.entries()) {
       if (cols.length > 1) {
         cols.forEach((col) => conflicts.add(`${i}-${col}`));
       }
     }
     // Mark col conflicts
-    for (const [num, rows] of colMap.entries()) {
+    for (const [, rows] of colMap.entries()) {
       if (rows.length > 1) {
         rows.forEach((row) => conflicts.add(`${row}-${i}`));
       }
@@ -220,7 +201,7 @@ function validateBoard(board: (number | null)[][]): Set<string> {
           }
         }
       }
-      for (const [num, cells] of blockMap.entries()) {
+      for (const [, cells] of blockMap.entries()) {
         if (cells.length > 1) {
           cells.forEach(([row, col]) => conflicts.add(`${row}-${col}`));
         }
