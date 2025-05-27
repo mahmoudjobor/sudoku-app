@@ -1,14 +1,15 @@
-import React from "react";
+import type { FC, Dispatch } from "react";
+import type { SetStateAction } from "react";
 import Cell from "./Cell";
 
 interface BoardProps {
   board: (number | null)[][];
-  setBoard: React.Dispatch<React.SetStateAction<(number | null)[][]>>;
+  setBoard: Dispatch<SetStateAction<(number | null)[][]>>;
   conflicts: Set<string>;
   initialCells: boolean[][];
 }
 
-const Board: React.FC<BoardProps> = ({
+const Board: FC<BoardProps> = ({
   board,
   setBoard,
   conflicts,
@@ -25,7 +26,6 @@ const Board: React.FC<BoardProps> = ({
     <div className="sudoku-container">
       {board.map((row, rowIndex) =>
         row.map((cellValue, colIndex) => {
-          // Add thick borders for 3x3 blocks
           const borderClass = [
             rowIndex % 3 === 0 ? "border-top" : "",
             colIndex % 3 === 0 ? "border-left" : "",
@@ -34,7 +34,7 @@ const Board: React.FC<BoardProps> = ({
           ]
             .filter(Boolean)
             .join(" ");
-          const isConflict = conflicts.has(`${rowIndex}-${colIndex}`);
+
           return (
             <div
               className={`sudoku-cell ${borderClass}`}
