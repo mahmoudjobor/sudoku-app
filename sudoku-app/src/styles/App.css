@@ -176,3 +176,63 @@ header p {
   color: #666;
   cursor: not-allowed;
 }
+
+.controls {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  justify-content: center;
+}
+
+.clear-btn,
+.solve-btn,
+.hint-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+.control-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.clear-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.solve-btn {
+  background-color: #2196f3;
+  color: white;
+}
+
+.hint-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.clear-btn:hover,
+.solve-btn:hover,
+.hint-btn:hover {
+  filter: brightness(0.9);
+}
+.control-btn.clear {
+  background-color: #e53e3e;
+  color: white;
+}
+.control-btn.solve {
+  background-color: #3182ce;
+  color: white;
+}
+
+.control-btn.hint {
+  background-color: #38a169;
+  color: white;
+}

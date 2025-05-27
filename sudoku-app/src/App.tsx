@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import Board from "./components/Board";
 import Header from "./components/Header";
-import { generateSudoku, validateBoard } from "./utils/sudokuGenrator";
+import {
+  generateSudoku,
+  validateBoard,
+  solveSudoku,
+} from "./utils/sudokuGenrator";
 import "./styles/App.css";
 
 function App() {
-  const initialPuzzle = generateSudoku("medium");
   const [difficulty, setDifficulty] = useState<"easy" | "medium" | "hard">(
     "medium"
   );
@@ -53,11 +56,57 @@ function App() {
       setCheckMsg("There are errors in your solution.");
     }
   };
+  const handleClearBoard = () => {
+    const emptyBoard = Array.from({ length: 9 }, () => Array(9).fill(null));
+    setBoard(emptyBoard);
+    setInitialCells(Array.from({ length: 9 }, () => Array(9).fill(false)));
+    setConflicts(new Set());
+    setCheckMsg("");
+  };
+  const handleSolveAll = () => {
+    const solution = solveSudoku([...board.map((row) => [...row])]);
+    if (solution) {
+      setBoard(solution);
+      setConflicts(new Set());
+      setCheckMsg("Puzzle solved!");
+    } else {
+      setCheckMsg("No solution exists for this puzzle!");
+    }
+  };
+
+  const handleHint = () => {
+    const solution = solveSudoku([...board.map((row) => [...row])]);
+    if (!solution) {
+      setCheckMsg("No solution exists for this puzzle!");
+      return;
+    }
+    for (let i = 0; i < 9; i++) {
+      for (let j = 0; j < 9; j++) {
+        if (!board[i][j] || board[i][j] !== solution[i][j]) {
+          const newBoard = board.map((row) => [...row]);
+          newBoard[i][j] = solution[i][j];
+          setBoard(newBoard);
+          setCheckMsg("Hint provided!");
+          return;
+        }
+      }
+    }
+    setCheckMsg("No more hints needed - puzzle is solved!");
+  };
 
   return (
     <div className="App">
       <Header />
       <div className="controls">
+        <button className="control-btn clear" onClick={handleClearBoard}>
+          Clear Board
+        </button>
+        <button className="control-btn solve" onClick={handleSolveAll}>
+          Solve Puzzle
+        </button>
+        <button className="control-btn hint" onClick={handleHint}>
+          Get Hint
+        </button>
         <label htmlFor="difficulty">Difficulty: </label>
         <select
           id="difficulty"
@@ -82,9 +131,7 @@ function App() {
           initialCells={initialCells}
         />
       </div>
-      <button className="check-btn" onClick={handleCheckSolution}>
-        Check Solution
-      </button>
+
       {checkMsg && <div className="check-msg">{checkMsg}</div>}
     </div>
   );

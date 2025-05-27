@@ -137,6 +137,36 @@ function shuffle(arr: number[]): number[] {
   }
   return arr;
 }
+export function solveSudoku(
+  board: (number | null)[][]
+): (number | null)[][] | null {
+  const emptyCells = findEmptyCells(board);
+  if (emptyCells.length === 0) return board;
+
+  const [row, col] = emptyCells[0];
+
+  for (let num = 1; num <= 9; num++) {
+    if (isSafe(board, row, col, num)) {
+      board[row][col] = num;
+
+      const solution = solveSudoku(board);
+      if (solution) return solution;
+
+      board[row][col] = null;
+    }
+  }
+
+  return null;
+}
+function findEmptyCells(board: (number | null)[][]): [number, number][] {
+  const emptyCells: [number, number][] = [];
+  for (let i = 0; i < 9; i++) {
+    for (let j = 0; j < 9; j++) {
+      if (!board[i][j]) emptyCells.push([i, j]);
+    }
+  }
+  return emptyCells;
+}
 
 // Returns a Set of cell keys (e.g., 'row-col') that are in conflict
 function validateBoard(board: (number | null)[][]): Set<string> {
@@ -160,6 +190,7 @@ function validateBoard(board: (number | null)[][]): Set<string> {
         colMap.get(colVal)!.push(j);
       }
     }
+
     // Mark row conflicts
     for (const [num, cols] of rowMap.entries()) {
       if (cols.length > 1) {
