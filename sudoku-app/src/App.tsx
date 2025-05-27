@@ -7,6 +7,7 @@ import {
   solveSudoku,
 } from "./utils/sudokuGenrator";
 import "./styles/App.css";
+import ImageUpload from "./components/ImageUpload";
 
 function App() {
   const [difficulty, setDifficulty] = useState<"easy" | "medium" | "hard">(
@@ -42,6 +43,13 @@ function App() {
   const handleSetBoard = (newBoard: (number | null)[][]) => {
     setBoard(newBoard);
     setConflicts(validateBoard(newBoard));
+    setCheckMsg("");
+  };
+  const handleBoardRecognition = (recognizedBoard: (number | null)[][]) => {
+    setBoard(recognizedBoard);
+    // Set all cells as non-read-only by making initialCells all false
+    setInitialCells(Array.from({ length: 9 }, () => Array(9).fill(false)));
+    setConflicts(new Set());
     setCheckMsg("");
   };
 
@@ -123,6 +131,10 @@ function App() {
           New Game
         </button>
       </div>
+      <ImageUpload
+        onBoardRecognized={handleBoardRecognition}
+        onStatusChange={setCheckMsg}
+      />
       <div className="sudoku-container">
         <Board
           board={board}
@@ -131,6 +143,9 @@ function App() {
           initialCells={initialCells}
         />
       </div>
+      <button className="check-btn" onClick={handleCheckSolution}>
+        Check Solution
+      </button>
 
       {checkMsg && <div className="check-msg">{checkMsg}</div>}
     </div>
